@@ -166,8 +166,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   wall: {fileID: 9100054428368371009, guid: 07d44db54516ecc44aa1cb3f4a6afefc, type: 3}
   wallLenght: 1
-  xSize: 20
-  ySize: 20
+  xSize: 5
+  ySize: 5
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
