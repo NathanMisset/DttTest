@@ -19,6 +19,8 @@ public class Maze : MonoBehaviour
     private Vector3 initialPos;
     private GameObject wallHolder;
     private Cell[] cells;
+    public int currentCell = 0;
+    private int totalCells;
 
     // Start is called before the first frame update
     void Start()
@@ -95,6 +97,70 @@ public class Maze : MonoBehaviour
             cells[cellprocess].west = allWalls[eastWestProcess];
             cells[cellprocess].north = allWalls[(childProcess + (xSize + 1) * ySize) + xSize - 1];
         }
+        CreateMaze();
+    }
+
+    void CreateMaze()
+    {
+        GiveMeNeightbour();
+    }
+    void GiveMeNeightbour()
+    {
+        totalCells = xSize * ySize;
+        int lenght = 0;
+        int[] neightbours = new int[4];
+        int check = 0;
+
+        check = ((currentCell + 1) / xSize);
+        check -= 1;
+        check *= xSize;
+        check += xSize;
+
+        //West
+        if (currentCell + 1 < totalCells && (currentCell + 1) != check)
+        {
+            if (cells [currentCell + 1].visited == false)
+            {
+                neightbours[lenght] = currentCell + 1;
+                lenght++;
+            }
+        }
+
+        //East
+        if (currentCell - 1 >= 0 && currentCell != check)
+        {
+            if (cells[currentCell - 1].visited == false)
+            {
+                neightbours[lenght] = currentCell - 1;
+                lenght++;
+            }
+        }
+
+        //North
+        if (currentCell + xSize < totalCells)
+        {
+            if (cells[currentCell + xSize].visited == false)
+            {
+                neightbours[lenght] = currentCell + xSize;
+                lenght++;
+            }
+        }
+
+        //South
+        if (currentCell - xSize >= 0)
+        {
+            if (cells[currentCell - xSize].visited == false)
+            {
+                neightbours[lenght] = currentCell - xSize;
+                lenght++;
+            }
+        }
+
+        for (int i = 0; i < lenght; i++)
+        {
+            Debug.Log(neightbours[i]);
+        }
+        
 
     }
 

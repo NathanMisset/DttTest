@@ -168,6 +168,7 @@ MonoBehaviour:
   wallLenght: 1
   xSize: 5
   ySize: 5
+  currentCell: 0
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
