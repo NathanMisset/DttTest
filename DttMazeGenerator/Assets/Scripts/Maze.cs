@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
+using Random = System.Random;
 
 public class Maze : MonoBehaviour
 {
@@ -7,10 +9,10 @@ public class Maze : MonoBehaviour
     public class Cell   
     {
         public bool visited;
-        public GameObject north;
-        public GameObject east;
-        public GameObject west;
-        public GameObject south;
+        public GameObject north;    //1
+        public GameObject east;     //2
+        public GameObject west;     //3
+        public GameObject south;    //4
     }
     public GameObject wall;
     public float wallLenght = 1.0f;
@@ -21,6 +23,12 @@ public class Maze : MonoBehaviour
     private Cell[] cells;
     public int currentCell = 0;
     private int totalCells;
+    private int visitedCells = 0;
+    private bool startedBuilding = false;
+    private int currentNeighbor = 0;
+    private List<int> lastCells;
+    private int backingUp = 0;
+    private int wallToBreak = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -61,6 +69,9 @@ public class Maze : MonoBehaviour
     
     void CreateCells()
     {
+        lastCells = new List<int>();
+        lastCells.Clear();
+        totalCells = xSize * ySize;
         GameObject[] allWalls;
         int children = wallHolder.transform.childCount;
         allWalls = new GameObject[children];
@@ -102,13 +113,66 @@ public class Maze : MonoBehaviour
 
     void CreateMaze()
     {
-        GiveMeNeightbour();
+        if (visitedCells < totalCells)
+        {
+            if (startedBuilding)
+            {
+                GiveMeNeightbour();
+                if (cells[currentNeighbor].visited == false && cells[currentCell].visited == true)
+                {
+                    BreakWall();
+                    cells[currentNeighbor].visited = true;
+                    visitedCells++;
+                    lastCells.Add(currentCell);
+                    currentCell = currentNeighbor;
+                    if (lastCells.Count > 0)
+                    {
+                        backingUp = lastCells.Count - 1;
+                    }
+                }
+            }
+            else
+            {
+                currentCell = UnityEngine.Random.Range(0, totalCells);
+                cells[currentCell].visited = true;
+                visitedCells++;
+                startedBuilding = true;
+            }
+
+            Invoke("CreateMaze", 0);
+        }
     }
+
+    void BreakWall()
+    {
+        Debug.Log(wallToBreak);
+        switch (wallToBreak)
+        {
+            
+            case 1:
+                Destroy(cells[currentCell].north);
+                Debug.Log(cells[currentCell] + "  North" );
+                break;
+            case 2:
+                Destroy(cells[currentCell].east);
+                Debug.Log(cells[currentCell] + "  East");
+                break;
+            case 3:
+                Destroy(cells[currentCell].west);
+                Debug.Log(cells[currentCell] + "  West");
+                break;
+            case 4:
+                Destroy(cells[currentCell].south);
+                Debug.Log(cells[currentCell] + "  South");
+                break;
+        }
+    }
+
     void GiveMeNeightbour()
     {
-        totalCells = xSize * ySize;
         int lenght = 0;
         int[] neightbours = new int[4];
+        int[] connectingWall = new int[4];
         int check = 0;
 
         check = ((currentCell + 1) / xSize);
@@ -119,9 +183,10 @@ public class Maze : MonoBehaviour
         //West
         if (currentCell + 1 < totalCells && (currentCell + 1) != check)
         {
-            if (cells [currentCell + 1].visited == false)
+            if (cells[currentCell + 1].visited == false)
             {
                 neightbours[lenght] = currentCell + 1;
+                connectingWall[lenght] = 3;
                 lenght++;
             }
         }
@@ -132,6 +197,7 @@ public class Maze : MonoBehaviour
             if (cells[currentCell - 1].visited == false)
             {
                 neightbours[lenght] = currentCell - 1;
+                connectingWall[lenght] = 2;
                 lenght++;
             }
         }
@@ -142,6 +208,7 @@ public class Maze : MonoBehaviour
             if (cells[currentCell + xSize].visited == false)
             {
                 neightbours[lenght] = currentCell + xSize;
+                connectingWall[lenght] = 1;
                 lenght++;
             }
         }
@@ -152,21 +219,24 @@ public class Maze : MonoBehaviour
             if (cells[currentCell - xSize].visited == false)
             {
                 neightbours[lenght] = currentCell - xSize;
+                connectingWall[lenght] = 4;
                 lenght++;
             }
         }
 
-        for (int i = 0; i < lenght; i++)
+        if (lenght != 0)
         {
-            Debug.Log(neightbours[i]);
+            int theChoseOne = UnityEngine.Random.Range(0, lenght);
+            currentNeighbor = neightbours[theChoseOne];
+            wallToBreak = connectingWall[theChoseOne];
         }
-        
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
+        else
+        {
+            if (backingUp > 0)
+            {
+                currentCell = lastCells[backingUp];
+                backingUp--;
+            }
+        }
     }
 }
