@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Random = System.Random;
+using UnityEngine.UI;
 
 public class Maze : MonoBehaviour
 {
@@ -15,7 +16,7 @@ public class Maze : MonoBehaviour
         public GameObject south;    //4
     }
     public GameObject wall;
-    public float wallLenght = 1.0f;
+    private float wallLenght = 1.0f;
     public int xSize = 5;
     public int ySize = 5;
     private Vector3 initialPos;
@@ -30,13 +31,37 @@ public class Maze : MonoBehaviour
     private int backingUp = 0;
     private int wallToBreak = 0;
 
+    private Slider WidthSilder;
+
+    private Slider HeightSlider;
+
     // Start is called before the first frame update
     void Start()
     {
+        WidthSilder = GameObject.Find("Width Slider").GetComponent<Slider>();
+        HeightSlider = GameObject.Find("Height Silder").GetComponent<Slider>();
+    }
+
+    public void Generate(){
+        Destroy(wallHolder);
+        currentCell = 0;
+        visitedCells = 0;
+        startedBuilding = false;
+        currentNeighbor = 0;
+        backingUp = 0;
+        wallToBreak = 0;
         CreateWalls();
     }
 
-    void CreateWalls()
+    public void ChangeWidth(){
+        xSize = (int)WidthSilder.value;
+    }
+    public void ChangeHeight(){
+        ySize = (int)HeightSlider.value;
+    }
+    
+
+    public void CreateWalls()
     {
         wallHolder = new GameObject();
         wallHolder.name = "Maze";
@@ -69,9 +94,12 @@ public class Maze : MonoBehaviour
     
     void CreateCells()
     {
+        if(lastCells != null){
+            lastCells.Clear();
+        }
         lastCells = new List<int>();
-        lastCells.Clear();
         totalCells = xSize * ySize;
+
         GameObject[] allWalls;
         int children = wallHolder.transform.childCount;
         allWalls = new GameObject[children];
