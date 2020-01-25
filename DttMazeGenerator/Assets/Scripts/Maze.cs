@@ -30,16 +30,16 @@ public class Maze : MonoBehaviour
     private List<int> lastCells;
     private int backingUp = 0;
     private int wallToBreak = 0;
-
     private Slider WidthSilder;
-
     private Slider HeightSlider;
+    private GameObject camera; 
 
     // Start is called before the first frame update
     void Start()
     {
         WidthSilder = GameObject.Find("Width Slider").GetComponent<Slider>();
         HeightSlider = GameObject.Find("Height Silder").GetComponent<Slider>();
+        camera = GameObject.Find("Main Camera");
     }
 
     public void Generate(){
@@ -51,6 +51,7 @@ public class Maze : MonoBehaviour
         backingUp = 0;
         wallToBreak = 0;
         CreateWalls();
+    	camera.transform.position = new Vector3(camera.transform.position.x, 9 + 1 * ySize, camera.transform.position.z);
     }
 
     public void ChangeWidth(){
@@ -65,7 +66,7 @@ public class Maze : MonoBehaviour
     {
         wallHolder = new GameObject();
         wallHolder.name = "Maze";
-        initialPos = new Vector3((-xSize / 2) + wallLenght / 2, 0, ((ySize / 2) + wallLenght / 2));
+        initialPos = new Vector3((-xSize / 2) + wallLenght / 2, 0, (-ySize / 2) + wallLenght / 2);
         Vector3 myPos = initialPos;
         GameObject tempWall;
         //For x Axis
