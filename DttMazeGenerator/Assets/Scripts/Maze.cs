@@ -17,8 +17,8 @@ public class Maze : MonoBehaviour
     }
     public GameObject wall;
     private float wallLenght = 1.0f;
-    public int xSize = 5;
-    public int ySize = 5;
+    public int xSize = 2;
+    public int ySize = 2;
     private Vector3 initialPos;
     private GameObject wallHolder;
     private Cell[] cells;
@@ -51,9 +51,18 @@ public class Maze : MonoBehaviour
         backingUp = 0;
         wallToBreak = 0;
         CreateWalls();
-    	camera.transform.position = new Vector3(camera.transform.position.x, 9 + 1 * ySize, camera.transform.position.z);
+        if (ySize > xSize)
+        {
+            camera.transform.position = new Vector3(camera.transform.position.x, 0.90f * ySize, camera.transform.position.z);
+        }
+        else
+        {
+            camera.transform.position = new Vector3(camera.transform.position.x, 0.90f * xSize + 2 , camera.transform.position.z);
+        }
+    	
     }
 
+    //These Methods Changes the Width/Height of the to be generated maze based on the value of the silder in the UI
     public void ChangeWidth(){
         xSize = (int)WidthSilder.value;
     }
@@ -62,6 +71,8 @@ public class Maze : MonoBehaviour
     }
     
 
+    //Step 1 Generate All walls
+    //Generates the walls from the lowest left corner and end at the highest right corner
     public void CreateWalls()
     {
         wallHolder = new GameObject();
@@ -69,7 +80,7 @@ public class Maze : MonoBehaviour
         initialPos = new Vector3((-xSize / 2) + wallLenght / 2, 0, (-ySize / 2) + wallLenght / 2);
         Vector3 myPos = initialPos;
         GameObject tempWall;
-        //For x Axis
+        //Generates all the wall Parelel to the x axis from the point of view of the user
         for (int i = 0; i < ySize; i++)
         {
             for (int j = 0; j <= xSize; j++)
@@ -80,7 +91,7 @@ public class Maze : MonoBehaviour
             }
         }
 
-        //For y Axis
+        //Generates all the wall Parelel to the x axis from the point of view of the user
         for (int i = 0; i <= ySize; i++)
         {
             for (int j = 0; j < xSize; j++)
@@ -174,10 +185,9 @@ public class Maze : MonoBehaviour
 
     void BreakWall()
     {
-        Debug.Log(wallToBreak);
+        
         switch (wallToBreak)
         {
-            
             case 1:
                 Destroy(cells[currentCell].north);
                 Debug.Log(cells[currentCell] + "  North" );
