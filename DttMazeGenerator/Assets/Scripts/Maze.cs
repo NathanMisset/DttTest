@@ -4,6 +4,7 @@ using UnityEngine;
 using Random = System.Random;
 using UnityEngine.UI;
 
+
 public class Maze : MonoBehaviour
 {
     [System.Serializable]
@@ -14,6 +15,7 @@ public class Maze : MonoBehaviour
         public GameObject east;     //2
         public GameObject west;     //3
         public GameObject south;    //4
+        //public int Weight;
     }
     public GameObject wall;
     private float wallLenght = 1.0f;
@@ -32,7 +34,9 @@ public class Maze : MonoBehaviour
     private int wallToBreak = 0;
     private Slider WidthSilder;
     private Slider HeightSlider;
-    private GameObject camera; 
+    private GameObject camera;
+
+    
 
     // Start is called before the first frame update
     void Start()
@@ -104,6 +108,7 @@ public class Maze : MonoBehaviour
         CreateCells();
     }
     
+    //Step 2 Making cell
     void CreateCells()
     {
         if(lastCells != null){
@@ -151,6 +156,8 @@ public class Maze : MonoBehaviour
         CreateMaze();
     }
 
+
+    //This method checks if there are still cells that aren't viseted
     void CreateMaze()
     {
         if (visitedCells < totalCells)
@@ -173,6 +180,7 @@ public class Maze : MonoBehaviour
             }
             else
             {
+                Debug.Log("Random Search");
                 currentCell = UnityEngine.Random.Range(0, totalCells);
                 cells[currentCell].visited = true;
                 visitedCells++;
@@ -183,6 +191,7 @@ public class Maze : MonoBehaviour
         }
     }
 
+    //Breaks the chosen wall
     void BreakWall()
     {
         
@@ -190,23 +199,23 @@ public class Maze : MonoBehaviour
         {
             case 1:
                 Destroy(cells[currentCell].north);
-                Debug.Log(cells[currentCell] + "  North" );
+                //Debug.Log(cells[currentCell] + "  North" );
                 break;
             case 2:
                 Destroy(cells[currentCell].east);
-                Debug.Log(cells[currentCell] + "  East");
+                //Debug.Log(cells[currentCell] + "  East");
                 break;
             case 3:
                 Destroy(cells[currentCell].west);
-                Debug.Log(cells[currentCell] + "  West");
+                //Debug.Log(cells[currentCell] + "  West");
                 break;
             case 4:
                 Destroy(cells[currentCell].south);
-                Debug.Log(cells[currentCell] + "  South");
+                //Debug.Log(cells[currentCell] + "  South");
                 break;
         }
     }
-
+    //chosing the next wall to break 
     void GiveMeNeightbour()
     {
         int lenght = 0;
